@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillMint | Freelance Marketplace Platform for Students and Freshers</title>
+  <meta name="description" content="SkillMint connects skilled students with clients for project hiring, portfolio building, and real-time collaboration. III BCA Academic Project 2026.">
+
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Custom Design System Styles -->
+  <link rel="stylesheet" href="css/styles.css?v=3.5">
+
+  <!-- Socket.io Client (Server bundle with CDN fallback) -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    if (typeof io === 'undefined') {
+      document.write('<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"><\/script>');
+    }
+  </script>
+
+  <!-- Immediate Global Admin Modal Handlers -->
+  <script>
+    function openAdminLoginModal() {
+      var modal = document.getElementById('modalAdminAuth');
+      if (modal) {
+        modal.classList.add('active');
+        modal.style.setProperty('display', 'flex', 'important');
+        modal.style.setProperty('z-index', '99999', 'important');
+        var userField = document.getElementById('adminUsername');
+        if (userField && !userField.value) userField.value = 'admin';
+        var pwdField = document.getElementById('adminPassword');
+        if (pwdField && !pwdField.value) pwdField.value = 'Password123!';
+        setTimeout(function() {
+          if (pwdField) pwdField.focus();
+        }, 120);
+      }
+    }
+    function closeAdminLoginModal() {
+      var modal = document.getElementById('modalAdminAuth');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.setProperty('display', 'none', 'important');
+      }
+    }
+    function handleAdminViewClick() {
+      openAdminLoginModal();
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ====================================================================
+       TOP NAVBAR
+       ==================================================================== -->
+  <nav class="navbar">
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo">
+        <div class="brand-icon">⚡</div>
+        <span>SkillMint</span>
+        <span class="brand-tag">BCA 2026</span>
+      </a>
+
+      <!-- Quick Role Switcher for Viva Demonstration -->
+      <div class="role-pill-group">
+        <button class="role-pill active" data-role="Student" onclick="switchDemoRole('student')">👨‍🎓 Student View</button>
+        <button class="role-pill" data-role="Client" onclick="switchDemoRole('client')">🏢 Client View</button>
+        <button class="role-pill" data-role="Admin" id="btnRoleAdmin" onclick="handleAdminViewClick()">🛡️ Admin View 🔒</button>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Live Chat Button -->
+        <button class="btn-chat-trigger" onclick="setActiveNavPill('messages')">
+          <span>💬 Live Chat</span>
+          <span class="chat-unread-dot" id="chatUnreadDot" style="display:none;"></span>
+        </button>
+
+        <!-- User Profile Pill -->
+        <div class="user-badge">
+          <div class="user-avatar" id="navUserAvatar">R</div>
+          <span class="user-name" id="navUserName">Rithik Student</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====================================================================
+       MAIN CONTENT CONTAINER
+       ==================================================================== -->
+  <main class="container">
+    
+    <!-- DASHBOARD METRICS -->
+    <header class="dashboard-header">
+      <!-- 4 Metric Badges Grid (Section 23.1) -->
+      <div class="metric-badges-grid" style="margin-top:0;">
+        <div class="metric-card">
+          <div class="metric-icon blue">💼</div>
+          <div class="metric-data">
+            <h4 id="metricAvailableCount">12</h4>
+            <p>Available Projects</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon purple">📝</div>
+          <div class="metric-data">
+            <h4 id="metricAppliedCount">5</h4>
+            <p>Applications Submitted</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon green">🏆</div>
+          <div class="metric-data">
+            <h4 id="metricCompletedCount">2</h4>
+            <p>Completed Milestones</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon amber">💬</div>
+          <div class="metric-data">
+            <h4 id="metricMessagesCount">3</h4>
+            <p>Active Conversations</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- NAVIGATION PILLS (SECTION 23.1) -->
+    <div class="nav-pills-bar">
+      <div class="pills-group">
+        <button class="nav-pill-btn active" data-pill="search" onclick="setActiveNavPill('search')">
+          🔍 Search Projects
+        </button>
+        <button class="nav-pill-btn" data-pill="portfolio" onclick="setActiveNavPill('portfolio')">
+          📁 My Portfolio
+        </button>
+        <button class="nav-pill-btn" id="pillMyApplications" data-pill="applications" onclick="setActiveNavPill('applications')">
+          📄 My Applications
+        </button>
+        <button class="nav-pill-btn" data-pill="messages" onclick="setActiveNavPill('messages')">
+          💬 Messages
+        </button>
+        <button class="nav-pill-btn" id="pillAdminConsole" data-pill="admin" style="display:none;" onclick="setActiveNavPill('admin')">
+          🛡️ Admin Console
+        </button>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn btn-primary btn-sm" id="btnOpenPostProject" style="display:none;" onclick="openModal('modalPostProject')">
+          ➕ Post a Project
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="openModal('modalPortfolio')">
+          📤 Submit Portfolio Item
+        </button>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 1: SEARCH & BROWSE OPEN PROJECTS
+         ==================================================================== -->
+    <section id="sectionSearchProjects">
+      <!-- Search & Filters Panel -->
+      <div class="filter-panel">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="filterSearch" placeholder="Search by project title, keyword, or client...">
+        </div>
+
+        <select class="filter-select" id="filterCategory">
+          <option value="">All Categories</option>
+          <option value="Frontend Development">Frontend Development</option>
+          <option value="Full Stack Development">Full Stack Development</option>
+          <option value="Backend Development">Backend Development</option>
+          <option value="Data Engineering">Data Engineering</option>
+          <option value="UI/UX Design">UI/UX Design</option>
+        </select>
+
+        <div class="search-input-wrap" style="flex:1;">
+          <input type="text" id="filterSkills" placeholder="Filter by skill (e.g. React, Node.js)...">
+        </div>
+      </div>
+
+      <!-- Interactive Projects Table -->
+      <div class="projects-table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Project Details</th>
+              <th>Category</th>
+              <th>Required Skills</th>
+              <th>Budget</th>
+              <th>Deadline</th>
+              <th style="text-align:right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="projectsTableBody">
+            <!-- Rendered dynamically by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 2: MY APPLICATIONS LIST (STUDENT VIEW)
+         ==================================================================== -->
+    <section id="sectionMyApplications" style="display:none;">
+      <h3 style="margin-bottom:16px; font-family:var(--font-heading);">My Submitted Applications</h3>
+      <div id="myApplicationsList">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3: ADMIN MANAGEMENT PORTAL (ONLY ACCESSIBLE TO AUTHENTICATED ADMIN)
+         ==================================================================== -->
+    <section id="sectionAdminPanel" style="display:none; margin-top:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-family:var(--font-heading); font-size:1.4rem; color:var(--text-main);">🛡️ Administrator Management Console</h2>
+          <p style="color:var(--text-muted); font-size:0.86rem;">Platform oversight, user moderation, and platform activity metrics</p>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="loadAdminData()">🔄 Refresh Stats</button>
+          <button class="btn btn-danger btn-sm" onclick="switchDemoRole('student')">Exit Admin</button>
+        </div>
+      </div>
+
+      <!-- Admin Stat Cards Grid -->
+      <div class="metric-badges-grid" style="margin-bottom:24px;">
+        <div class="metric-card">
+          <div class="metric-icon blue">👨‍🎓</div>
+          <div class="metric-data">
+            <h4 id="adminStatStudents">-</h4>
+            <p>Registered Students</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon purple">🏢</div>
+          <div class="metric-data">
+            <h4 id="adminStatClients">-</h4>
+            <p>Registered Clients</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon green">💼</div>
+          <div class="metric-data">
+            <h4 id="adminStatProjects">-</h4>
+            <p>Total Projects</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon amber">📄</div>
+          <div class="metric-data">
+            <h4 id="adminStatApps">-</h4>
+            <p>Total Applications</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Moderation Table -->
+      <div class="projects-table-wrap">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center;">
+          <h4 style="font-size:1rem; color:var(--text-main); font-weight:700;">Platform Users Moderation</h4>
+          <span style="font-size:0.78rem; color:var(--text-dim);">Suspended users are blocked from API login and actions</span>
+        </div>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>User ID & Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Joined Date</th>
+              <th style="text-align:right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersTableBody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       MODAL: MULTI-STEP PROJECT POSTING WIZARD (CLIENT)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalPostProject">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Post a New Freelance Project</h3>
+        <button class="modal-close" onclick="closeModal('modalPostProject')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Step Progress Indicator -->
+        <div class="wizard-progress">
+          <div class="wizard-step-node active" id="wizardNode1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Basic Info</span>
+          </div>
+          <div class="wizard-step-node" id="wizardNode2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Skills & Budget</span>
+          </div>
+          <div class="wizard-step-node" id="wizardNode3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Review & Post</span>
+          </div>
+        </div>
+
+        <form id="formPostProject" onsubmit="handleWizardProjectSubmit(event)">
+          <!-- Step 1: Project Overview -->
+          <div id="wizardStepSection1">
+            <div class="form-group">
+              <label class="form-label" for="wizardTitle">Project Title *</label>
+              <input type="text" class="form-input" id="wizardTitle" placeholder="e.g. Modern E-Commerce UI Redesign" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="wizardCategory">Category *</label>
+              <select class="form-select" id="wizardCategory">
+                <option value="Frontend Development">Frontend Development</option>
+                <option value="Full Stack Development">Full Stack Development</option>
+                <option value="Backend Development">Backend Development</option>
+                <option value="Data Engineering">Data Engineering</option>
+                <option value="UI/UX Design">UI/UX Design</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="wizardDesc">Detailed Scope & Requirements *</label>
+              <textarea class="form-textarea" id="wizardDesc" placeholder="Describe the project goals, deliverables, and student responsibilities..." required></textarea>
+            </div>
+          </div>
+
+          <!-- Step 2: Skills & Budget -->
+          <div id="wizardStepSection2" style="display:none;">
+            <div class="form-group">
+              <label class="form-label" for="wizardSkills">Required Skills (Comma-separated) *</label>
+              <input type="text" class="form-input" id="wizardSkills" placeholder="e.g. React, Tailwind CSS, Node.js" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="wizardBudget">Project Budget (INR ₹) *</label>
+              <input type="number" class="form-input" id="wizardBudget" min="500" max="1000000" placeholder="e.g. 25000" required>
+            </div>
+          </div>
+
+          <!-- Step 3: Deadline & Final Review -->
+          <div id="wizardStepSection3" style="display:none;">
+            <div class="form-group">
+              <label class="form-label" for="wizardDeadline">Submission Deadline (Future Date) *</label>
+              <input type="date" class="form-input" id="wizardDeadline" required>
+            </div>
+
+            <!-- Summary Box -->
+            <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:16px; margin-top:12px;">
+              <h5 style="color:var(--text-muted); font-size:0.8rem; text-transform:uppercase; margin-bottom:8px;">Posting Summary</h5>
+              <p style="font-size:0.9rem; margin-bottom:4px;"><strong>Title:</strong> <span id="summaryTitle">-</span></p>
+              <p style="font-size:0.9rem; margin-bottom:4px;"><strong>Category:</strong> <span id="summaryCategory">-</span></p>
+              <p style="font-size:0.9rem; margin-bottom:4px;"><strong>Skills:</strong> <span id="summarySkills">-</span></p>
+              <p style="font-size:0.9rem;"><strong>Budget:</strong> <span id="summaryBudget" style="color:#34d399; font-weight:700;">-</span></p>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="wizardBtnPrev" style="display:none;" onclick="wizardPrevStep()">Back</button>
+        <button type="button" class="btn btn-primary btn-sm" id="wizardBtnNext" onclick="wizardNextStep()">Next Step →</button>
+        <button type="submit" form="formPostProject" class="btn btn-success btn-sm" id="wizardBtnSubmit" style="display:none;">Confirm & Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: PORTFOLIO SUBMISSION WITH CLIENT-SIDE VALIDATION (<5MB, PDF/PNG/JPEG)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalPortfolio">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Submit Portfolio Project</h3>
+        <button class="modal-close" onclick="closeModal('modalPortfolio')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="formPortfolio" onsubmit="handlePortfolioSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="portfolioTitle">Project Title *</label>
+            <input type="text" class="form-input" id="portfolioTitle" placeholder="e.g. BCA Final Year Student Portal" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="portfolioUrl">Live Demo or GitHub URL</label>
+            <input type="url" class="form-input" id="portfolioUrl" placeholder="https://github.com/username/project">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="portfolioDesc">Description & Technologies Used</label>
+            <textarea class="form-textarea" id="portfolioDesc" placeholder="Summarize your architecture, tech stack, and key features..."></textarea>
+          </div>
+
+          <!-- File Upload Dropzone with validation -->
+          <div class="form-group">
+            <label class="form-label">Project Screenshot or Report (Max 5MB)</label>
+            <div class="form-file-dropzone" onclick="document.getElementById('portfolioFile').click()">
+              <div class="dropzone-icon">📁</div>
+              <div style="font-weight:600; font-size:0.9rem;">Click to upload document or screenshot</div>
+              <div class="file-info-text" id="portfolioFileInfo">Supported: PDF, PNG, JPG (Max 5MB)</div>
+              <input type="file" id="portfolioFile" style="display:none;" accept=".pdf,.png,.jpg,.jpeg" onchange="handlePortfolioFileSelect(this)">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalPortfolio')">Cancel</button>
+        <button type="submit" form="formPortfolio" class="btn btn-primary btn-sm">Save to Portfolio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: STUDENT APPLY TO PROJECT
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalApplyProject">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Apply to Project</h3>
+        <button class="modal-close" onclick="closeModal('modalApplyProject')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">
+          Applying to: <strong id="applyProjectTitleDisplay" style="color:var(--text-main);">-</strong>
+        </p>
+
+        <form id="formApplyProject" onsubmit="handleApplicationSubmit(event)">
+          <input type="hidden" id="applyProjectId">
+
+          <div class="form-group">
+            <label class="form-label" for="applyCoverMessage">Cover Message / Proposal *</label>
+            <textarea class="form-textarea" id="applyCoverMessage" placeholder="Highlight your relevant experience, technical skills, and why you are the best fit for this project..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="applyPortfolioLink">Portfolio / GitHub Repository Link</label>
+            <input type="url" class="form-input" id="applyPortfolioLink" placeholder="https://github.com/rithik/project">
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="applyTimeline">Proposed Timeline</label>
+              <input type="text" class="form-input" id="applyTimeline" placeholder="e.g. 7 days" value="7 days">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="applyBidAmount">Bid Amount (INR ₹)</label>
+              <input type="number" class="form-input" id="applyBidAmount" placeholder="e.g. 22000">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalApplyProject')">Cancel</button>
+        <button type="submit" form="formApplyProject" class="btn btn-primary btn-sm">Submit Proposal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: CLIENT APPLICANT REVIEW
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalApplicantReview">
+    <div class="modal-container" style="max-width:700px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="applicantReviewModalTitle">Review Project Applicants</h3>
+        <button class="modal-close" onclick="closeModal('modalApplicantReview')">&times;</button>
+      </div>
+
+      <div class="modal-body" id="applicantReviewModalBody">
+        <!-- Rendered dynamically by viewProjectApplicants() -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalApplicantReview')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ADMIN AUTHENTICATION (USERNAME & PASSWORD PROTECTED)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalAdminAuth" onclick="if(event.target===this) closeAdminLoginModal()" style="display:none;">
+    <div class="modal-container" style="max-width:440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔒 Administrator Portal Login</h3>
+        <button class="modal-close" type="button" onclick="closeAdminLoginModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:16px;">
+          This area is restricted to platform administrators only. Please enter your administrator credentials to proceed.
+        </p>
+
+        <form id="formAdminAuth" onsubmit="handleAdminAuthSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="adminUsername">Admin Username or Email *</label>
+            <input type="text" class="form-input" id="adminUsername" placeholder="e.g. admin or admin@skillmint.org" value="admin" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adminPassword">Admin Password *</label>
+            <input type="password" class="form-input" id="adminPassword" placeholder="••••••••••••" value="Password123!" required>
+          </div>
+
+          <div style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); border-radius:var(--radius-sm); padding:10px 14px; font-size:0.78rem; color:#c7d2fe; margin-top:8px;">
+            🔑 <strong>Administrator Credentials:</strong><br>
+            Username: <code style="color:#fff;">admin</code> (or <code style="color:#fff;">admin@skillmint.org</code>)<br>
+            Password: <code style="color:#fff;">Password123!</code>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeAdminLoginModal()">Cancel</button>
+        <button type="submit" form="formAdminAuth" class="btn btn-primary btn-sm">Authenticate 🛡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       REAL-TIME LIVE CHAT DRAWER (SOCKET.IO)
+       ==================================================================== -->
+  <div class="chat-drawer" id="chatDrawer">
+    <div class="chat-header">
+      <div class="chat-partner-info">
+        <span class="chat-status-dot" id="chatStatusDot"></span>
+        <div>
+          <h4 style="font-size:0.92rem; font-weight:700;" id="chatPartnerName">Client Partner</h4>
+          <span style="font-size:0.75rem; color:var(--text-dim);" id="chatPartnerRole">Direct Collaboration</span>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeChat()">&times;</button>
+    </div>
+
+    <div class="chat-messages-container" id="chatMessages">
+      <!-- Chat bubbles rendered dynamically -->
+    </div>
+
+    <div class="chat-typing-indicator" id="chatTypingIndicator"></div>
+
+    <div class="chat-input-bar">
+      <input type="text" id="chatInput" placeholder="Type a direct message...">
+      <button class="chat-send-btn" onclick="handleSendMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Inline Modal Helper to guarantee modal opening regardless of network/caching -->
+  <script>
+    function openAdminLoginModal() {
+      var modal = document.getElementById('modalAdminAuth');
+      if (modal) {
+        modal.classList.add('active');
+        modal.style.setProperty('display', 'flex', 'important');
+        modal.style.setProperty('z-index', '99999', 'important');
+        var userField = document.getElementById('adminUsername');
+        if (userField && !userField.value) userField.value = 'admin';
+        var pwdField = document.getElementById('adminPassword');
+        if (pwdField && !pwdField.value) pwdField.value = 'Password123!';
+        setTimeout(function() {
+          if (pwdField) pwdField.focus();
+        }, 120);
+      }
+    }
+    function closeAdminLoginModal() {
+      var modal = document.getElementById('modalAdminAuth');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.setProperty('display', 'none', 'important');
+      }
+    }
+  </script>
+
+  <!-- Core App Scripts with Cache-Buster -->
+  <script src="js/chat.js?v=3.5"></script>
+  <script src="js/app.js?v=3.5"></script>
+</body>
+</html>
