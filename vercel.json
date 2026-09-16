@@ -2,12 +2,16 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "includeFiles": "skillmint.db"
+      "includeFiles": "{skillmint.db,public/**}"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/",
       "destination": "/api/index.js"
     }
   ]
