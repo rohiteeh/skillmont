@@ -35,9 +35,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Root route handler for serverless deployments
+// Root route redirect for Vercel and serverless deployments
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.redirect('/index.html');
 });
 
 // Request logging (development)
