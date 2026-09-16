@@ -36,7 +36,21 @@ async function initDB() {
   } else {
     // Default: SQLite using Node.js 24 native DatabaseSync
     const { DatabaseSync } = require('node:sqlite');
-    const dbPath = path.resolve(process.cwd(), process.env.SQLITE_PATH || './skillmint.db');
+    let dbPath;
+    if (process.env.VERCEL) {
+      dbPath = path.join('/tmp', 'skillmint.db');
+      const seedDb = path.resolve(__dirname, '../../skillmint.db');
+      if (fs.existsSync(seedDb) && !fs.existsSync(dbPath)) {
+        try {
+          fs.copyFileSync(seedDb, dbPath);
+          console.log('✅ Seed database copied to /tmp for Vercel execution.');
+        } catch (e) {
+          console.warn('⚠️ Could not copy seed db, creating fresh:', e.message);
+        }
+      }
+    } else {
+      dbPath = path.resolve(process.cwd(), process.env.SQLITE_PATH || './skillmint.db');
+    }
     
     dbInstance = new DatabaseSync(dbPath);
     console.log(`✅ SQLite Database initialized at: ${dbPath}`);
