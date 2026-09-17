@@ -206,8 +206,41 @@ async function loadDashboardMetrics() {
 }
 
 /* ====================================================================
-   PROJECTS EXPLORER & FILTERING
+   PROJECTS EXPLORER & QUICK FILTER CHIPS
    ==================================================================== */
+function filterByQuickSkill(skill) {
+  const skillInput = document.getElementById('filterSkills');
+  if (skillInput) {
+    skillInput.value = skill;
+  }
+  
+  // Highlight active chip
+  document.querySelectorAll('.quick-skill-chip').forEach(chip => {
+    if (!chip.classList.contains('reset')) {
+      const chipText = chip.textContent || '';
+      chip.classList.toggle('active', !!skill && chipText.toLowerCase().includes(skill.toLowerCase()));
+    }
+  });
+
+  // Switch to search view if in other view
+  setActiveNavPill('search');
+  
+  // Trigger project reload
+  loadProjects();
+
+  // Smooth scroll to projects section
+  const section = document.getElementById('sectionSearchProjects');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  if (skill) {
+    showToast(`⚡ Filtered projects by: ${skill}`, 'info');
+  } else {
+    showToast('Filters reset.', 'info');
+  }
+}
+
 async function loadProjects() {
   const tableBody = document.getElementById('projectsTableBody');
   if (!tableBody) return;
@@ -259,28 +292,28 @@ function renderProjectsTable(projects) {
     return `
       <tr>
         <td class="project-title-cell">
-          <div style="font-weight:600; color:var(--text-main); font-size:0.95rem;">${escapeHtml(p.Title)}</div>
-          <div class="project-client-name">Posted by ${escapeHtml(p.ClientName || 'Client')} • ${escapeHtml(p.CompanyName || '')}</div>
+          <div style="font-weight:700; color:var(--text-main); font-size:0.96rem; letter-spacing:-0.01em;">${escapeHtml(p.Title)}</div>
+          <div class="project-client-name">Posted by ${escapeHtml(p.ClientName || 'Client')} • <span style="color:#a5b4fc;">${escapeHtml(p.CompanyName || 'Verified Enterprise')}</span></div>
         </td>
         <td><span class="badge-category">${escapeHtml(p.Category)}</span></td>
         <td><div style="display:flex; flex-wrap:wrap; gap:4px;">${skillBadges}</div></td>
-        <td class="budget-text">₹${Number(p.Budget).toLocaleString('en-IN')}</td>
+        <td><span class="budget-text">₹${Number(p.Budget).toLocaleString('en-IN')}</span></td>
         <td>
           <div style="font-size:0.85rem; color:var(--text-muted);">${p.Deadline || '2026-12-31'}</div>
-          <div style="font-size:0.75rem; color:var(--text-dim);">${p.ApplicationCount || 0} applicants</div>
+          <div style="font-size:0.75rem; color:#a78bfa; font-weight:600;">⚡ ${p.ApplicationCount || 0} proposals</div>
         </td>
         <td style="text-align:right;">
           ${isStudent ? `
             <button class="btn btn-primary btn-sm" onclick="openApplyModal(${p.ProjectID}, '${escapeHtml(p.Title)}')">
-              Apply Now
+              Apply Now 🚀
             </button>
           ` : isOwner ? `
             <button class="btn btn-secondary btn-sm" onclick="viewProjectApplicants(${p.ProjectID})">
-              Review Applicants
+              Review Applicants 👥
             </button>
           ` : `
             <button class="btn btn-secondary btn-sm" onclick="openChatWithUser(${p.ClientID}, '${escapeHtml(p.ClientName)}')">
-              Contact Client
+              Contact Client 💬
             </button>
           `}
         </td>

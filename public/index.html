@@ -71,13 +71,18 @@
        ==================================================================== -->
   <nav class="navbar">
     <div class="container nav-wrapper">
-      <a href="#" class="brand-logo">
-        <div class="brand-icon">⚡</div>
-        <span>SkillMint</span>
-        <span class="brand-tag">BCA 2026</span>
-      </a>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <a href="#" class="brand-logo">
+          <div class="brand-icon">⚡</div>
+          <span class="brand-title-text">SkillMint</span>
+        </a>
+        <div class="network-status-badge">
+          <span class="network-pulse-dot"></span>
+          <span>Live Escrow Network</span>
+        </div>
+      </div>
 
-      <!-- Quick Role Switcher for Viva Demonstration -->
+      <!-- Quick Role Switcher for Demonstration -->
       <div class="role-pill-group">
         <button class="role-pill active" data-role="Student" onclick="switchDemoRole('student')">👨‍🎓 Student View</button>
         <button class="role-pill" data-role="Client" onclick="switchDemoRole('client')">🏢 Client View</button>
@@ -104,6 +109,47 @@
        MAIN CONTENT CONTAINER
        ==================================================================== -->
   <main class="container">
+
+    <!-- HERO SPOTLIGHT BANNER & QUICK FILTER CHIPS -->
+    <section class="hero-spotlight" id="heroSpotlight">
+      <div class="hero-spotlight-content">
+        <div class="hero-badge-pill">⚡ Decentralized Talent Protocol & Instant Escrow</div>
+        <h1 class="hero-spotlight-heading">
+          Find Student Projects. <span class="gradient-text">Build Proof of Work.</span>
+        </h1>
+        <p class="hero-spotlight-sub">
+          Connect verified university talent with cutting-edge client gigs, protected milestone payments, and instant real-time collaboration.
+        </p>
+
+        <!-- Quick Trending Skill Filter Chips -->
+        <div class="trending-skills-row">
+          <span class="trending-label">🔥 Hot Skills:</span>
+          <button type="button" class="quick-skill-chip" onclick="filterByQuickSkill('React')">⚡ React</button>
+          <button type="button" class="quick-skill-chip" onclick="filterByQuickSkill('Node.js')">🟢 Node.js</button>
+          <button type="button" class="quick-skill-chip" onclick="filterByQuickSkill('Python')">🐍 Python AI</button>
+          <button type="button" class="quick-skill-chip" onclick="filterByQuickSkill('UI/UX')">🎨 UI/UX</button>
+          <button type="button" class="quick-skill-chip" onclick="filterByQuickSkill('Full Stack')">💎 Full Stack</button>
+          <button type="button" class="quick-skill-chip reset" onclick="filterByQuickSkill('')">✕ Reset</button>
+        </div>
+      </div>
+
+      <div class="hero-feature-cards">
+        <div class="hero-feature-card">
+          <div class="hero-feature-icon">🛡️</div>
+          <div>
+            <strong>100% Protected Escrow</strong>
+            <p>Funds locked securely until milestone acceptance.</p>
+          </div>
+        </div>
+        <div class="hero-feature-card">
+          <div class="hero-feature-icon">⚡</div>
+          <div>
+            <strong>Real-Time Socket Chat</strong>
+            <p>Instant live communication directly with hiring clients.</p>
+          </div>
+        </div>
+      </div>
+    </section>
     
     <!-- DASHBOARD METRICS -->
     <header class="dashboard-header">
@@ -112,7 +158,7 @@
         <div class="metric-card">
           <div class="metric-icon blue">💼</div>
           <div class="metric-data">
-            <h4 id="metricAvailableCount">12</h4>
+            <h4><span id="metricAvailableCount">12</span> <span class="metric-trend-badge">● Active</span></h4>
             <p>Available Projects</p>
           </div>
         </div>
@@ -120,7 +166,7 @@
         <div class="metric-card">
           <div class="metric-icon purple">📝</div>
           <div class="metric-data">
-            <h4 id="metricAppliedCount">5</h4>
+            <h4><span id="metricAppliedCount">5</span> <span class="metric-trend-badge">+2 new</span></h4>
             <p>Applications Submitted</p>
           </div>
         </div>
@@ -128,7 +174,7 @@
         <div class="metric-card">
           <div class="metric-icon green">🏆</div>
           <div class="metric-data">
-            <h4 id="metricCompletedCount">2</h4>
+            <h4><span id="metricCompletedCount">2</span> <span class="metric-trend-badge">100% Escrow</span></h4>
             <p>Completed Milestones</p>
           </div>
         </div>
@@ -136,7 +182,7 @@
         <div class="metric-card">
           <div class="metric-icon amber">💬</div>
           <div class="metric-data">
-            <h4 id="metricMessagesCount">3</h4>
+            <h4><span id="metricMessagesCount">3</span> <span class="metric-trend-badge">Live Sync</span></h4>
             <p>Active Conversations</p>
           </div>
         </div>
