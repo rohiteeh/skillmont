@@ -127,4 +127,9 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { app, server, io, startServer };
+// Export Express app directly for Vercel Serverless Function compatibility
+module.exports = app;
+app.app = app;
+app.server = server;
+app.io = io;
+app.startServer = startServer;
