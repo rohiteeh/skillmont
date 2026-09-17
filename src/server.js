@@ -38,6 +38,11 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/login.html'));
 });
 
+// Marketplace dashboard route
+app.get('/marketplace', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 // Root route: redirect visitors to Login Portal
 app.get('/', (req, res) => {
   res.redirect('/login');

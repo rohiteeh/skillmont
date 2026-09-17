@@ -224,9 +224,9 @@ async function executeLogin(email, password) {
       setTimeout(() => {
         // If admin role, redirect to index.html with #admin hash or direct view
         if (data.data.user.Role === 'Admin') {
-          window.location.href = 'index.html#admin';
+          window.location.href = '/marketplace#admin';
         } else {
-          window.location.href = 'index.html';
+          window.location.href = '/marketplace';
         }
       }, 700);
     } else {
@@ -312,7 +312,7 @@ async function handleRegisterSubmit(e) {
       if (btnText) btnText.textContent = 'Account Ready! Redirecting...';
 
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = '/marketplace';
       }, 750);
     } else {
       showAuthAlert(data.message || 'Registration failed. Please check inputs and try again.', 'error');
