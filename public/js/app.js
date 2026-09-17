@@ -728,6 +728,30 @@ function closeAdminLoginModal() {
   closeModal('modalAdminAuth');
 }
 
+function toggleAdminPasswordVisibility() {
+  const pwdField = document.getElementById('adminPassword');
+  const btn = document.getElementById('btnToggleAdminPassword');
+  const btnText = document.getElementById('btnToggleAdminPasswordText');
+  if (pwdField) {
+    if (pwdField.type === 'password') {
+      pwdField.type = 'text';
+      if (btn) btn.textContent = '🙈';
+      if (btnText) btnText.textContent = '🙈 Hide Password';
+    } else {
+      pwdField.type = 'password';
+      if (btn) btn.textContent = '👁️';
+      if (btnText) btnText.textContent = '👁️ Show Password';
+    }
+  }
+}
+
+function fillAdminCredentials() {
+  const userField = document.getElementById('adminUsername');
+  const pwdField = document.getElementById('adminPassword');
+  if (userField) userField.value = 'admin';
+  if (pwdField) pwdField.value = 'Password123!';
+}
+
 function handleAdminViewClick() {
   openAdminLoginModal();
 }

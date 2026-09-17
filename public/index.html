@@ -46,6 +46,28 @@
         modal.style.setProperty('display', 'none', 'important');
       }
     }
+    function toggleAdminPasswordVisibility() {
+      var pwdField = document.getElementById('adminPassword');
+      var btn = document.getElementById('btnToggleAdminPassword');
+      var btnText = document.getElementById('btnToggleAdminPasswordText');
+      if (pwdField) {
+        if (pwdField.type === 'password') {
+          pwdField.type = 'text';
+          if (btn) btn.textContent = '🙈';
+          if (btnText) btnText.textContent = '🙈 Hide Password';
+        } else {
+          pwdField.type = 'password';
+          if (btn) btn.textContent = '👁️';
+          if (btnText) btnText.textContent = '👁️ Show Password';
+        }
+      }
+    }
+    function fillAdminCredentials() {
+      var userField = document.getElementById('adminUsername');
+      var pwdField = document.getElementById('adminPassword');
+      if (userField) userField.value = 'admin';
+      if (pwdField) pwdField.value = 'Password123!';
+    }
     function handleAdminViewClick() {
       openAdminLoginModal();
     }
@@ -521,14 +543,20 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="adminPassword">Admin Password *</label>
-            <input type="password" class="form-input" id="adminPassword" placeholder="••••••••••••" value="Password123!" required>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label class="form-label" for="adminPassword" style="margin-bottom:0;">Admin Password *</label>
+              <button type="button" id="btnToggleAdminPasswordText" onclick="toggleAdminPasswordVisibility()" style="background:none; border:none; color:var(--primary); font-size:0.78rem; font-weight:600; cursor:pointer; padding:0 2px;">👁️ Show Password</button>
+            </div>
+            <div style="position:relative; display:flex; align-items:center;">
+              <input type="password" class="form-input" id="adminPassword" placeholder="••••••••••••" value="Password123!" required style="padding-right:42px; width:100%;">
+              <button type="button" id="btnToggleAdminPassword" onclick="toggleAdminPasswordVisibility()" style="position:absolute; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.15rem; line-height:1; padding:4px;" title="Toggle password visibility">👁️</button>
+            </div>
           </div>
 
-          <div style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); border-radius:var(--radius-sm); padding:10px 14px; font-size:0.78rem; color:#c7d2fe; margin-top:8px;">
-            🔑 <strong>Administrator Credentials:</strong><br>
-            Username: <code style="color:#fff;">admin</code> (or <code style="color:#fff;">admin@skillmint.org</code>)<br>
-            Password: <code style="color:#fff;">Password123!</code>
+          <div onclick="fillAdminCredentials()" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); border-radius:var(--radius-sm); padding:10px 14px; font-size:0.80rem; color:#c7d2fe; margin-top:10px; cursor:pointer; user-select:text;" title="Click to auto-fill credentials">
+            🔑 <strong>Administrator Credentials:</strong> <span style="font-size:0.72rem; color:var(--text-dim);">(Click to auto-fill)</span><br>
+            Username: <code style="color:#fff; font-weight:700;">admin</code> (or <code style="color:#fff; font-weight:700;">admin@skillmint.org</code>)<br>
+            Password: <code style="color:#fff; font-weight:700;">Password123!</code>
           </div>
         </form>
       </div>
@@ -593,6 +621,28 @@
         modal.classList.remove('active');
         modal.style.setProperty('display', 'none', 'important');
       }
+    }
+    function toggleAdminPasswordVisibility() {
+      var pwdField = document.getElementById('adminPassword');
+      var btn = document.getElementById('btnToggleAdminPassword');
+      var btnText = document.getElementById('btnToggleAdminPasswordText');
+      if (pwdField) {
+        if (pwdField.type === 'password') {
+          pwdField.type = 'text';
+          if (btn) btn.textContent = '🙈';
+          if (btnText) btnText.textContent = '🙈 Hide Password';
+        } else {
+          pwdField.type = 'password';
+          if (btn) btn.textContent = '👁️';
+          if (btnText) btnText.textContent = '👁️ Show Password';
+        }
+      }
+    }
+    function fillAdminCredentials() {
+      var userField = document.getElementById('adminUsername');
+      var pwdField = document.getElementById('adminPassword');
+      if (userField) userField.value = 'admin';
+      if (pwdField) pwdField.value = 'Password123!';
     }
   </script>
 
