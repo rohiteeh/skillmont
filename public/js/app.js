@@ -713,14 +713,7 @@ function openAdminLoginModal() {
   openModal('modalAdminAuth');
   setTimeout(() => {
     const userField = document.getElementById('adminUsername');
-    if (userField) {
-      if (!userField.value) userField.value = 'admin';
-      const pwdField = document.getElementById('adminPassword');
-      if (pwdField) {
-        if (!pwdField.value) pwdField.value = 'Password123!';
-        pwdField.focus();
-      }
-    }
+    if (userField) userField.focus();
   }, 100);
 }
 
@@ -743,13 +736,6 @@ function toggleAdminPasswordVisibility() {
       if (btnText) btnText.textContent = '👁️ Show Password';
     }
   }
-}
-
-function fillAdminCredentials() {
-  const userField = document.getElementById('adminUsername');
-  const pwdField = document.getElementById('adminPassword');
-  if (userField) userField.value = 'admin';
-  if (pwdField) pwdField.value = 'Password123!';
 }
 
 function handleAdminViewClick() {

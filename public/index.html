@@ -30,12 +30,9 @@
         modal.classList.add('active');
         modal.style.setProperty('display', 'flex', 'important');
         modal.style.setProperty('z-index', '99999', 'important');
-        var userField = document.getElementById('adminUsername');
-        if (userField && !userField.value) userField.value = 'admin';
-        var pwdField = document.getElementById('adminPassword');
-        if (pwdField && !pwdField.value) pwdField.value = 'Password123!';
         setTimeout(function() {
-          if (pwdField) pwdField.focus();
+          var userField = document.getElementById('adminUsername');
+          if (userField) userField.focus();
         }, 120);
       }
     }
@@ -61,12 +58,6 @@
           if (btnText) btnText.textContent = '👁️ Show Password';
         }
       }
-    }
-    function fillAdminCredentials() {
-      var userField = document.getElementById('adminUsername');
-      var pwdField = document.getElementById('adminPassword');
-      if (userField) userField.value = 'admin';
-      if (pwdField) pwdField.value = 'Password123!';
     }
     function handleAdminViewClick() {
       openAdminLoginModal();
@@ -539,7 +530,7 @@
         <form id="formAdminAuth" onsubmit="handleAdminAuthSubmit(event)">
           <div class="form-group">
             <label class="form-label" for="adminUsername">Admin Username or Email *</label>
-            <input type="text" class="form-input" id="adminUsername" placeholder="e.g. admin or admin@skillmint.org" value="admin" required>
+            <input type="text" class="form-input" id="adminUsername" placeholder="Enter admin username or email" autocomplete="username" required>
           </div>
 
           <div class="form-group">
@@ -548,15 +539,9 @@
               <button type="button" id="btnToggleAdminPasswordText" onclick="toggleAdminPasswordVisibility()" style="background:none; border:none; color:var(--primary); font-size:0.78rem; font-weight:600; cursor:pointer; padding:0 2px;">👁️ Show Password</button>
             </div>
             <div style="position:relative; display:flex; align-items:center;">
-              <input type="password" class="form-input" id="adminPassword" placeholder="••••••••••••" value="Password123!" required style="padding-right:42px; width:100%;">
+              <input type="password" class="form-input" id="adminPassword" placeholder="Enter admin password" autocomplete="current-password" required style="padding-right:42px; width:100%;">
               <button type="button" id="btnToggleAdminPassword" onclick="toggleAdminPasswordVisibility()" style="position:absolute; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.15rem; line-height:1; padding:4px;" title="Toggle password visibility">👁️</button>
             </div>
-          </div>
-
-          <div onclick="fillAdminCredentials()" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); border-radius:var(--radius-sm); padding:10px 14px; font-size:0.80rem; color:#c7d2fe; margin-top:10px; cursor:pointer; user-select:text;" title="Click to auto-fill credentials">
-            🔑 <strong>Administrator Credentials:</strong> <span style="font-size:0.72rem; color:var(--text-dim);">(Click to auto-fill)</span><br>
-            Username: <code style="color:#fff; font-weight:700;">admin</code> (or <code style="color:#fff; font-weight:700;">admin@skillmint.org</code>)<br>
-            Password: <code style="color:#fff; font-weight:700;">Password123!</code>
           </div>
         </form>
       </div>
@@ -606,12 +591,9 @@
         modal.classList.add('active');
         modal.style.setProperty('display', 'flex', 'important');
         modal.style.setProperty('z-index', '99999', 'important');
-        var userField = document.getElementById('adminUsername');
-        if (userField && !userField.value) userField.value = 'admin';
-        var pwdField = document.getElementById('adminPassword');
-        if (pwdField && !pwdField.value) pwdField.value = 'Password123!';
         setTimeout(function() {
-          if (pwdField) pwdField.focus();
+          var userField = document.getElementById('adminUsername');
+          if (userField) userField.focus();
         }, 120);
       }
     }
@@ -637,12 +619,6 @@
           if (btnText) btnText.textContent = '👁️ Show Password';
         }
       }
-    }
-    function fillAdminCredentials() {
-      var userField = document.getElementById('adminUsername');
-      var pwdField = document.getElementById('adminPassword');
-      if (userField) userField.value = 'admin';
-      if (pwdField) pwdField.value = 'Password123!';
     }
   </script>
 
