@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "functions": {
     "api/index.js": {
       "includeFiles": "skillmint.db"
@@ -8,7 +9,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/index.html",
+      "destination": "/login",
       "permanent": false
     }
   ],
@@ -16,6 +17,10 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
     }
   ]
 }

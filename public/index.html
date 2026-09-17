@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillMint | Freelance Marketplace Platform for Students and Freshers</title>
-  <meta name="description" content="SkillMint connects skilled students with clients for project hiring, portfolio building, and real-time collaboration. III BCA Academic Project 2026.">
+  <meta name="description" content="SkillMint connects skilled students with clients for project hiring, portfolio building, and real-time collaboration.">
 
   <!-- Modern Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,10 +97,20 @@
         </button>
 
         <!-- User Profile Pill -->
-        <div class="user-badge">
+        <div class="user-badge" id="navUserBadge" title="Current Active Session">
           <div class="user-avatar" id="navUserAvatar">R</div>
           <span class="user-name" id="navUserName">Rithik Student</span>
         </div>
+
+        <!-- Dedicated Link to Login Page -->
+        <a href="login.html" class="role-pill" id="btnNavLoginLink" style="text-decoration:none; padding:6px 14px; font-size:0.8rem; background:rgba(99, 102, 241, 0.16); border:1px solid rgba(99, 102, 241, 0.4); color:#c7d2fe; display:inline-flex; align-items:center; gap:6px; cursor:pointer;" title="Open Login & Register Portal">
+          <span>🔑 Login Page</span>
+        </a>
+
+        <!-- Auth Portal / Sign Out Button -->
+        <button class="role-pill" id="btnNavAuth" onclick="handleAuthAction()" style="padding:6px 14px; font-size:0.8rem; background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.3); color:#fca5a5; display:inline-flex; align-items:center; gap:6px; cursor:pointer;" title="Sign out to Login Portal">
+          <span id="btnNavAuthText">🚪 Sign Out</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -120,6 +130,16 @@
         <p class="hero-spotlight-sub">
           Connect verified university talent with cutting-edge client gigs, protected milestone payments, and instant real-time collaboration.
         </p>
+
+        <div style="display:flex; align-items:center; gap:12px; margin: 16px 0 20px;">
+          <a href="login.html" class="btn btn-primary btn-sm" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            <span>🔑 Go to Login & Register</span>
+            <span>→</span>
+          </a>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="const p = document.querySelector('.nav-pills-bar') || document.querySelector('.projects-grid'); if(p) p.scrollIntoView({behavior:'smooth'});" style="display:inline-flex; align-items:center; gap:6px;">
+            <span>💼 Explore Projects</span>
+          </button>
+        </div>
 
         <!-- Quick Trending Skill Filter Chips -->
         <div class="trending-skills-row">

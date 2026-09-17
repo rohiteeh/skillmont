@@ -33,12 +33,17 @@ app.set('trust proxy', true);
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../public')));
-
-// Root route redirect for Vercel and serverless deployments
-app.get('/', (req, res) => {
-  res.redirect('/index.html');
+// Dedicated login and registration portal route
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/login.html'));
 });
+
+// Root route: redirect visitors to Login Portal
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Request logging (development)
 if (process.env.NODE_ENV !== 'test') {

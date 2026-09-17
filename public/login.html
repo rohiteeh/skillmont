@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In & Register | SkillMint Freelance Marketplace</title>
+  <meta name="description" content="Sign in or create an account on SkillMint - The decentralized freelance marketplace connecting skilled students with verified client projects and instant escrow.">
+
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Portal Stylesheets -->
+  <link rel="stylesheet" href="css/login.css?v=1.0">
+</head>
+<body class="auth-body">
+
+  <!-- Ambient Glow Orbs -->
+  <div class="auth-ambient-orb orb-1"></div>
+  <div class="auth-ambient-orb orb-2"></div>
+
+  <!-- Top Navigation Header -->
+  <header class="auth-top-nav">
+    <a href="index.html" class="brand-link" title="SkillMint Homepage">
+      <div class="brand-logo-icon">⚡</div>
+      <span class="brand-title">SkillMint</span>
+    </a>
+
+    <div style="display:flex; align-items:center; gap:20px;">
+      <div class="nav-badge-pill">
+        <span class="pulse-dot"></span>
+        <span>Live Escrow Active</span>
+      </div>
+      <a href="index.html" class="auth-nav-action">
+        <span>Explore Marketplace</span>
+        <span>→</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Split Layout -->
+  <main class="auth-main-wrapper">
+    <div class="auth-grid">
+
+      <!-- Left Hero Presentation -->
+      <section class="auth-hero-showcase">
+        <h1 class="auth-hero-title">
+          Gateway to Student Talent & <span class="gradient-span">Live Projects.</span>
+        </h1>
+
+        <p class="auth-hero-desc">
+          SkillMint unites undergraduate talent with clients through milestone-backed smart contracts, verified skill badges, and real-time socket collaboration.
+        </p>
+
+        <!-- Feature List -->
+        <div class="auth-feature-list">
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">🛡️</div>
+            <div class="auth-feature-text">
+              <h4>Milestone Escrow Security</h4>
+              <p>Project funds are locked in simulated decentralized escrow and released upon client milestone approval.</p>
+            </div>
+          </div>
+
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">🎓</div>
+            <div class="auth-feature-text">
+              <h4>Verified Student Portfolios</h4>
+              <p>Showcase authentic GitHub repositories, live deployments, and academic skill endorsements.</p>
+            </div>
+          </div>
+
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">💬</div>
+            <div class="auth-feature-text">
+              <h4>Instant Real-Time Chat</h4>
+              <p>Direct communication via Socket.io channels with typing indicators and zero-delay message sync.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Auth Card -->
+      <section class="auth-card-container">
+        <div class="auth-card">
+
+          <!-- Returning User Active Session Alert -->
+          <div class="existing-session-banner" id="existingSessionBanner">
+            <div class="session-user-info">
+              <div class="session-avatar" id="sessionAvatar">U</div>
+              <div class="session-user-details">
+                <h5 id="sessionUserName">User Name</h5>
+                <span id="sessionUserRole">Student</span>
+              </div>
+            </div>
+            <div class="session-actions">
+              <a href="index.html" class="demo-pill-badge badge-student" style="text-decoration:none; display:inline-block;">Dashboard →</a>
+              <button type="button" onclick="logoutFromAuthPortal()" style="background:none; border:none; color:var(--danger); font-size:0.75rem; cursor:pointer; font-weight:600;">Sign Out</button>
+            </div>
+          </div>
+
+          <!-- Segmented Tab Switcher -->
+          <div class="auth-tab-bar" role="tablist">
+            <button type="button" class="auth-tab-btn active" id="tabBtnSignIn" onclick="switchAuthTab('signin')" role="tab" aria-selected="true" aria-controls="panelSignIn">
+              <span>🔑</span>
+              <span>Sign In</span>
+            </button>
+            <button type="button" class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')" role="tab" aria-selected="false" aria-controls="panelRegister">
+              <span>✨</span>
+              <span>Create Account</span>
+            </button>
+          </div>
+
+          <!-- Alert Notification Box -->
+          <div class="auth-alert" id="authAlertBox" role="alert"></div>
+
+          <!-- ==========================================================
+               PANEL 1: SIGN IN
+               ========================================================== -->
+          <div class="auth-tab-panel active" id="panelSignIn" role="tabpanel" aria-labelledby="tabBtnSignIn">
+            <h2 class="auth-form-title">Welcome Back</h2>
+            <p class="auth-form-sub">Access your SkillMint dashboard, proposals, and active escrow contracts.</p>
+
+            <form id="formSignIn" onsubmit="handleSignInSubmit(event)" novalidate>
+              <!-- Email / Username -->
+              <div class="auth-form-group">
+                <label class="auth-form-label" for="loginEmail">Email Address or Username *</label>
+                <div class="auth-input-wrapper">
+                  <span class="auth-input-icon">📧</span>
+                  <input
+                    type="email"
+                    class="auth-input"
+                    id="loginEmail"
+                    name="username"
+                    autocomplete="username"
+                    placeholder="name@skillmint.edu or admin"
+                    enterkeyhint="next"
+                    required
+                  >
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="auth-form-group">
+                <label class="auth-form-label" for="loginPassword">Password *</label>
+                <div class="auth-input-wrapper">
+                  <span class="auth-input-icon">🔒</span>
+                  <input
+                    type="password"
+                    class="auth-input"
+                    id="loginPassword"
+                    name="password"
+                    autocomplete="current-password"
+                    placeholder="Enter your account password"
+                    enterkeyhint="done"
+                    required
+                  >
+                  <button
+                    type="button"
+                    class="auth-pwd-toggle"
+                    id="btnToggleLoginPwd"
+                    onclick="togglePasswordVisibility('loginPassword', this)"
+                    title="Toggle password visibility"
+                    aria-label="Toggle password visibility"
+                  >👁️</button>
+                </div>
+              </div>
+
+              <!-- Remember Me & Forgot Password -->
+              <div class="auth-extra-row">
+                <label class="auth-checkbox-label">
+                  <input type="checkbox" id="rememberMe" checked>
+                  <span>Remember session</span>
+                </label>
+                <a href="#" class="auth-link" onclick="handleForgotPassword(event)">Forgot Password?</a>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="auth-btn-primary" id="btnSignInSubmit">
+                <span id="btnSignInText">Sign In to SkillMint 🚀</span>
+                <div class="btn-spinner" id="loginSpinner"></div>
+              </button>
+            </form>
+
+            <!-- 1-Click Viva Presets Section -->
+            <div class="auth-demo-divider">
+              <span>⚡ 1-Click Viva Evaluation Presets</span>
+            </div>
+
+            <div class="demo-pills-container">
+              <!-- Student Demo Pill -->
+              <button type="button" class="demo-pill-btn" onclick="quickFillAndLogin('student')">
+                <div class="demo-pill-left">
+                  <span class="demo-pill-badge badge-student">Student</span>
+                  <div>
+                    <div class="demo-pill-title">Rithik Student</div>
+                    <div class="demo-pill-email">student@skillmint.edu</div>
+                  </div>
+                </div>
+                <div class="demo-pill-action">
+                  <span>1-Click Log In</span>
+                  <span>→</span>
+                </div>
+              </button>
+
+              <!-- Client Demo Pill -->
+              <button type="button" class="demo-pill-btn" onclick="quickFillAndLogin('client')">
+                <div class="demo-pill-left">
+                  <span class="demo-pill-badge badge-client">Client</span>
+                  <div>
+                    <div class="demo-pill-title">Rubith Tech Ventures</div>
+                    <div class="demo-pill-email">client@skillmint.biz</div>
+                  </div>
+                </div>
+                <div class="demo-pill-action">
+                  <span>1-Click Log In</span>
+                  <span>→</span>
+                </div>
+              </button>
+
+              <!-- Admin Demo Pill -->
+              <button type="button" class="demo-pill-btn" onclick="quickFillAndLogin('admin')">
+                <div class="demo-pill-left">
+                  <span class="demo-pill-badge badge-admin">Admin</span>
+                  <div>
+                    <div class="demo-pill-title">Administrator Portal</div>
+                    <div class="demo-pill-email">admin@skillmint.org</div>
+                  </div>
+                </div>
+                <div class="demo-pill-action">
+                  <span>1-Click Log In</span>
+                  <span>🛡️</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- ==========================================================
+               PANEL 2: REGISTER (CREATE ACCOUNT)
+               ========================================================== -->
+          <div class="auth-tab-panel" id="panelRegister" role="tabpanel" aria-labelledby="tabBtnRegister">
+            <h2 class="auth-form-title">Join SkillMint</h2>
+            <p class="auth-form-sub">Create your verified student or employer profile in 30 seconds.</p>
+
+            <form id="formRegister" onsubmit="handleRegisterSubmit(event)" novalidate>
+
+              <!-- Role Selector Cards -->
+              <div class="auth-form-group">
+                <label class="auth-form-label">Select Your Role *</label>
+                <div class="role-cards-grid">
+                  <div class="role-card-select selected" id="roleCardStudent" onclick="selectRegisterRole('Student')">
+                    <span class="role-card-icon">👨‍🎓</span>
+                    <span class="role-card-title">Student Freelancer</span>
+                    <span class="role-card-sub">Find work & build proof of work</span>
+                  </div>
+                  <div class="role-card-select" id="roleCardClient" onclick="selectRegisterRole('Client')">
+                    <span class="role-card-icon">🏢</span>
+                    <span class="role-card-title">Client / Employer</span>
+                    <span class="role-card-sub">Post projects & hire student talent</span>
+                  </div>
+                </div>
+                <input type="hidden" id="registerRole" value="Student">
+              </div>
+
+              <!-- Full Name -->
+              <div class="auth-form-group">
+                <label class="auth-form-label" for="registerName">Full Name *</label>
+                <div class="auth-input-wrapper">
+                  <span class="auth-input-icon">👤</span>
+                  <input
+                    type="text"
+                    class="auth-input"
+                    id="registerName"
+                    name="name"
+                    autocomplete="name"
+                    placeholder="e.g. Arun Kumar"
+                    required
+                  >
+                </div>
+              </div>
+
+              <!-- Email Address -->
+              <div class="auth-form-group">
+                <label class="auth-form-label" for="registerEmail">Email Address *</label>
+                <div class="auth-input-wrapper">
+                  <span class="auth-input-icon">📧</span>
+                  <input
+                    type="email"
+                    class="auth-input"
+                    id="registerEmail"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="e.g. arun@college.edu"
+                    required
+                  >
+                </div>
+              </div>
+
+              <!-- Dynamic Role-Specific Fields -->
+              <div id="studentFieldsContainer">
+                <div class="auth-form-row">
+                  <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerDepartment">Department</label>
+                    <div class="auth-input-wrapper">
+                      <span class="auth-input-icon">🏛️</span>
+                      <input
+                        type="text"
+                        class="auth-input"
+                        id="registerDepartment"
+                        placeholder="Computer Applications (BCA)"
+                        value="Computer Applications (BCA)"
+                      >
+                    </div>
+                  </div>
+                  <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerSemester">Semester</label>
+                    <div class="auth-input-wrapper">
+                      <span class="auth-input-icon">📅</span>
+                      <input
+                        type="text"
+                        class="auth-input"
+                        id="registerSemester"
+                        placeholder="Semester VI"
+                        value="Semester VI"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="clientFieldsContainer" style="display:none;">
+                <div class="auth-form-row">
+                  <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerCompany">Company / Agency</label>
+                    <div class="auth-input-wrapper">
+                      <span class="auth-input-icon">💼</span>
+                      <input
+                        type="text"
+                        class="auth-input"
+                        id="registerCompany"
+                        placeholder="e.g. NexaTech Studios"
+                      >
+                    </div>
+                  </div>
+                  <div class="auth-form-group">
+                    <label class="auth-form-label" for="registerIndustry">Industry</label>
+                    <div class="auth-input-wrapper">
+                      <span class="auth-input-icon">🌐</span>
+                      <input
+                        type="text"
+                        class="auth-input"
+                        id="registerIndustry"
+                        placeholder="Software & Web Dev"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="auth-form-group">
+                <label class="auth-form-label" for="registerPassword">Password (Min. 6 Characters) *</label>
+                <div class="auth-input-wrapper">
+                  <span class="auth-input-icon">🔒</span>
+                  <input
+                    type="password"
+                    class="auth-input"
+                    id="registerPassword"
+                    name="new-password"
+                    autocomplete="new-password"
+                    placeholder="Create a strong password"
+                    minlength="6"
+                    required
+                  >
+                  <button
+                    type="button"
+                    class="auth-pwd-toggle"
+                    onclick="togglePasswordVisibility('registerPassword', this)"
+                    title="Toggle password visibility"
+                    aria-label="Toggle password visibility"
+                  >👁️</button>
+                </div>
+              </div>
+
+              <!-- Terms Checkbox -->
+              <div class="auth-extra-row">
+                <label class="auth-checkbox-label">
+                  <input type="checkbox" id="termsAgreement" required checked>
+                  <span>I agree to SkillMint Smart Contract & Escrow Terms</span>
+                </label>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="auth-btn-primary" id="btnRegisterSubmit">
+                <span id="btnRegisterText">Create Verified Account ✨</span>
+                <div class="btn-spinner" id="registerSpinner"></div>
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Login Logic Script -->
+  <script src="js/login.js?v=1.0"></script>
+</body>
+</html>

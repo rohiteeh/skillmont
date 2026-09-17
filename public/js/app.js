@@ -33,16 +33,47 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initAuth() {
   const token = localStorage.getItem('skillmint_token');
   const cachedUser = localStorage.getItem('skillmint_user');
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPreview = urlParams.get('preview') || urlParams.get('demo') || urlParams.get('guest');
 
   if (token && cachedUser) {
-    currentUser = JSON.parse(cachedUser);
-    updateUserUI();
-    initSocketConnection(token);
-    loadDashboardMetrics();
-  } else {
-    // Automatically login as Demo Student by default for instant smooth preview
+    try {
+      currentUser = JSON.parse(cachedUser);
+      updateUserUI();
+      initSocketConnection(token);
+      loadDashboardMetrics();
+    } catch (e) {
+      console.warn('Failed to parse cached session:', e);
+      localStorage.removeItem('skillmint_token');
+      localStorage.removeItem('skillmint_user');
+      window.location.href = 'login.html';
+    }
+  } else if (isPreview) {
+    // Demo/guest preview mode bypasses initial login gate
     await switchDemoRole('student');
+  } else {
+    // Unauthenticated user - redirect to dedicated login portal
+    window.location.href = 'login.html';
   }
+}
+
+function handleAuthAction() {
+  const token = localStorage.getItem('skillmint_token');
+  if (token) {
+    handleLogout();
+  } else {
+    window.location.href = 'login.html';
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem('skillmint_token');
+  localStorage.removeItem('skillmint_user');
+  localStorage.removeItem('skillmint_profile');
+  showToast('Signed out. Redirecting to login portal...', 'info');
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 450);
 }
 
 async function switchDemoRole(roleKey) {
@@ -95,6 +126,25 @@ function updateUserUI() {
   const userAvatarEl = document.getElementById('navUserAvatar');
   if (userNameEl) userNameEl.textContent = currentUser.Name;
   if (userAvatarEl) userAvatarEl.textContent = currentUser.Name.charAt(0);
+
+  // Update Auth action button in navbar
+  const authBtn = document.getElementById('btnNavAuth');
+  const authBtnText = document.getElementById('btnNavAuthText');
+  if (authBtn && authBtnText) {
+    if (currentUser) {
+      authBtnText.textContent = '🚪 Sign Out';
+      authBtn.style.background = 'rgba(239, 68, 68, 0.12)';
+      authBtn.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+      authBtn.style.color = '#fca5a5';
+      authBtn.title = `Signed in as ${currentUser.Name} (${currentUser.Role}). Click to sign out.`;
+    } else {
+      authBtnText.textContent = '🔑 Sign In';
+      authBtn.style.background = 'var(--accent-gradient)';
+      authBtn.style.borderColor = 'transparent';
+      authBtn.style.color = '#ffffff';
+      authBtn.title = 'Sign In to SkillMint';
+    }
+  }
 
   // Update Greeting Card (Section 23.1)
   const greetingName = document.getElementById('greetingUserName');
