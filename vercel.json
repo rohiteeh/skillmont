@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "functions": {
     "api/index.js": {
       "includeFiles": "skillmint.db"
@@ -21,6 +20,14 @@
     {
       "source": "/login",
       "destination": "/login.html"
+    },
+    {
+      "source": "/marketplace",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/index.html"
     }
   ]
 }
