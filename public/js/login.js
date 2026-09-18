@@ -4,7 +4,11 @@
  * Handles Sign In, Registration, 1-Click Viva Presets, and JWT Session Management
  */
 
-const API_BASE = (window.location.protocol === 'file:') ? 'http://localhost:3000' : '';
+const API_BASE = (window.location.protocol === 'file:')
+  ? 'http://localhost:3000'
+  : ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port && window.location.port !== '3000' && window.location.port !== '5000'
+      ? 'http://localhost:3000'
+      : '');
 
 // 1-Click Viva Demonstration Accounts
 const VIVA_DEMO_CREDENTIALS = {
@@ -224,9 +228,9 @@ async function executeLogin(email, password) {
       setTimeout(() => {
         // If admin role, redirect to index.html with #admin hash or direct view
         if (data.data.user.Role === 'Admin') {
-          window.location.href = '/marketplace#admin';
+          window.location.href = 'index.html#admin';
         } else {
-          window.location.href = '/marketplace';
+          window.location.href = 'index.html';
         }
       }, 700);
     } else {
@@ -312,7 +316,7 @@ async function handleRegisterSubmit(e) {
       if (btnText) btnText.textContent = 'Account Ready! Redirecting...';
 
       setTimeout(() => {
-        window.location.href = '/marketplace';
+        window.location.href = 'index.html';
       }, 750);
     } else {
       showAuthAlert(data.message || 'Registration failed. Please check inputs and try again.', 'error');

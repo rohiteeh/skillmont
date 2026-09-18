@@ -9,7 +9,11 @@ let projectsData = [];
 let myApplicationsData = [];
 let activeTab = 'search'; // 'search', 'portfolio', 'applications', 'client-projects'
 let currentWizardStep = 1;
-const API_BASE = (window.location.protocol === 'file:') ? 'http://localhost:3000' : '';
+const API_BASE = (window.location.protocol === 'file:')
+  ? 'http://localhost:3000'
+  : ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port && window.location.port !== '3000' && window.location.port !== '5000'
+      ? 'http://localhost:3000'
+      : '');
 
 // Demo Accounts mapping for 1-click viva demonstrations (Admin requires credentials)
 const DEMO_ACCOUNTS = {
@@ -46,14 +50,14 @@ async function initAuth() {
       console.warn('Failed to parse cached session:', e);
       localStorage.removeItem('skillmint_token');
       localStorage.removeItem('skillmint_user');
-      window.location.href = 'login.html';
+      await switchDemoRole('student');
     }
   } else if (isPreview) {
     // Demo/guest preview mode bypasses initial login gate
     await switchDemoRole('student');
   } else {
-    // Unauthenticated user - redirect to dedicated login portal
-    window.location.href = 'login.html';
+    // Unauthenticated user - activate student preview so visitor can explore projects freely without infinite redirect loop
+    await switchDemoRole('student');
   }
 }
 
@@ -116,9 +120,10 @@ async function switchDemoRole(roleKey) {
 function updateUserUI() {
   if (!currentUser) return;
 
-  // Update role pill active state
-  document.querySelectorAll('.role-pill').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.role.toLowerCase() === currentUser.Role.toLowerCase());
+  // Update role pill active state safely
+  document.querySelectorAll('.role-pill[data-role]').forEach(btn => {
+    const role = btn.dataset.role;
+    btn.classList.toggle('active', !!(role && currentUser.Role && role.toLowerCase() === currentUser.Role.toLowerCase()));
   });
 
   // Update header avatar & name
@@ -826,7 +831,7 @@ function handleAdminViewClick() {
 }
 
 function showAdminDashboard() {
-  document.querySelectorAll('.role-pill').forEach(btn => {
+  document.querySelectorAll('.role-pill[data-role]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.role === 'Admin');
   });
 
