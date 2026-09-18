@@ -32,6 +32,7 @@ const VIVA_DEMO_CREDENTIALS = {
 document.addEventListener('DOMContentLoaded', () => {
   checkExistingSession();
   parseUrlParameters();
+  loadRememberedCredentials();
 });
 
 /**
@@ -58,6 +59,30 @@ function checkExistingSession() {
     } catch (e) {
       console.warn('Could not parse cached user data:', e);
     }
+  }
+}
+
+/**
+ * Load remembered credentials from localStorage if user opted in
+ */
+function loadRememberedCredentials() {
+  try {
+    const rememberCheckbox = document.getElementById('rememberMe');
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+
+    const savedEmail = localStorage.getItem('skillmint_remembered_email');
+    const savedPassword = localStorage.getItem('skillmint_remembered_password');
+
+    if (savedEmail && emailInput && !emailInput.value) {
+      emailInput.value = savedEmail;
+      if (rememberCheckbox) rememberCheckbox.checked = true;
+    }
+    if (savedPassword && passwordInput && !passwordInput.value) {
+      passwordInput.value = savedPassword;
+    }
+  } catch (err) {
+    console.warn('Could not load remembered credentials:', err);
   }
 }
 
@@ -218,6 +243,16 @@ async function executeLogin(email, password) {
       localStorage.setItem('skillmint_user', JSON.stringify(data.data.user));
       if (data.data.profile) {
         localStorage.setItem('skillmint_profile', JSON.stringify(data.data.profile));
+      }
+
+      // Remember username & password if opted in
+      const rememberCheckbox = document.getElementById('rememberMe');
+      if (rememberCheckbox && rememberCheckbox.checked) {
+        localStorage.setItem('skillmint_remembered_email', email);
+        localStorage.setItem('skillmint_remembered_password', password);
+      } else {
+        localStorage.removeItem('skillmint_remembered_email');
+        localStorage.removeItem('skillmint_remembered_password');
       }
 
       showAuthAlert(`✅ Welcome back, ${data.data.user.Name}! Redirecting to dashboard...`, 'success');
