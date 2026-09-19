@@ -179,7 +179,8 @@ async function initDB() {
 async function query(sql, params = []) {
   if (DB_TYPE === 'mysql') {
     if (!mysqlPool) await initDB();
-    const [result] = await mysqlPool.execute(sql, params);
+    const mysqlSql = sql.replace(/datetime\('now'\)/gi, 'NOW()');
+    const [result] = await mysqlPool.execute(mysqlSql, params);
     return result;
   } else {
     // SQLite execution

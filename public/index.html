@@ -221,6 +221,9 @@
         <button class="nav-pill-btn" id="pillMyApplications" data-pill="applications" onclick="setActiveNavPill('applications')">
           📄 My Applications
         </button>
+        <button class="nav-pill-btn" id="pillClientProjects" data-pill="client-projects" style="display:none;" onclick="setActiveNavPill('client-projects')">
+          📋 My Posted Projects
+        </button>
         <button class="nav-pill-btn" data-pill="messages" onclick="setActiveNavPill('messages')">
           💬 Messages
         </button>
@@ -688,8 +691,16 @@
     }
   </script>
 
+  <!-- Socket.io Real-Time Client Library (CDN with local fallback) -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    if (typeof io === 'undefined') {
+      document.write('<script src="/socket.io/socket.io.js"><\/script>');
+    }
+  </script>
+
   <!-- Core App Scripts with Cache-Buster -->
-  <script src="js/chat.js?v=3.5"></script>
-  <script src="js/app.js?v=3.5"></script>
+  <script src="js/chat.js?v=3.6"></script>
+  <script src="js/app.js?v=3.6"></script>
 </body>
 </html>

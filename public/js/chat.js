@@ -7,7 +7,11 @@ let socket = null;
 let currentChatPartnerId = null;
 let currentChatPartnerName = 'Chat';
 let typingTimer = null;
-const SOCKET_BASE = (window.location.protocol === 'file:') ? 'http://localhost:3000' : window.location.origin;
+const SOCKET_BASE = (window.location.protocol === 'file:')
+  ? 'http://localhost:3000'
+  : ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port && window.location.port !== '3000' && window.location.port !== '5000'
+      ? 'http://localhost:3000'
+      : (window.location.origin || ''));
 
 function initSocketConnection(token) {
   if (socket) {
@@ -65,6 +69,14 @@ function initSocketConnection(token) {
 
 function openChatWithUser(userId, userName) {
   currentChatPartnerId = Number(userId);
+
+  if (!userName && typeof projectsData !== 'undefined' && Array.isArray(projectsData)) {
+    const project = projectsData.find(p => Number(p.ClientID) === Number(userId));
+    if (project && project.ClientName) {
+      userName = project.ClientName;
+    }
+  }
+
   currentChatPartnerName = userName || `User #${userId}`;
 
   const drawer = document.getElementById('chatDrawer');

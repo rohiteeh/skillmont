@@ -342,7 +342,7 @@ function renderProjectsTable(projects) {
       .join(' ');
 
     const isStudent = currentUser && currentUser.Role === 'Student';
-    const isOwner = currentUser && Number(currentUser.UserID) === Number(p.ClientID);
+    const isOwner = currentUser && (Number(currentUser.UserID) === Number(p.ClientID) || Number(currentUser.ClientID) === Number(p.ClientID));
 
     return `
       <tr>
@@ -359,7 +359,7 @@ function renderProjectsTable(projects) {
         </td>
         <td style="text-align:right;">
           ${isStudent ? `
-            <button class="btn btn-primary btn-sm" onclick="openApplyModal(${p.ProjectID}, '${escapeHtml(p.Title)}')">
+            <button class="btn btn-primary btn-sm" onclick="openApplyModal(${p.ProjectID})">
               Apply Now 🚀
             </button>
           ` : isOwner ? `
@@ -367,7 +367,7 @@ function renderProjectsTable(projects) {
               Review Applicants 👥
             </button>
           ` : `
-            <button class="btn btn-secondary btn-sm" onclick="openChatWithUser(${p.ClientID}, '${escapeHtml(p.ClientName)}')">
+            <button class="btn btn-secondary btn-sm" onclick="openChatWithUser(${p.ClientID})">
               Contact Client 💬
             </button>
           `}
@@ -466,10 +466,15 @@ async function updateAppStatus(applicationId, newStatus) {
    STUDENT APPLICATION MODAL & SUBMISSION
    ==================================================================== */
 function openApplyModal(projectId, projectTitle) {
+  const project = (typeof projectsData !== 'undefined' && Array.isArray(projectsData))
+    ? projectsData.find(p => Number(p.ProjectID) === Number(projectId))
+    : null;
+  const title = project ? project.Title : (projectTitle || `Project #${projectId}`);
+
   const idInput = document.getElementById('applyProjectId');
   const titleDisplay = document.getElementById('applyProjectTitleDisplay');
   if (idInput) idInput.value = projectId;
-  if (titleDisplay) titleDisplay.textContent = projectTitle;
+  if (titleDisplay) titleDisplay.textContent = title;
 
   openModal('modalApplyProject');
 }
@@ -736,6 +741,12 @@ function setActiveNavPill(pillName) {
   if (pillName === 'search') {
     if (sectionSearch) sectionSearch.style.display = 'block';
     if (sectionMyApps) sectionMyApps.style.display = 'none';
+    renderProjectsTable(projectsData);
+  } else if (pillName === 'client-projects') {
+    if (sectionSearch) sectionSearch.style.display = 'block';
+    if (sectionMyApps) sectionMyApps.style.display = 'none';
+    const myProjects = projectsData.filter(p => currentUser && (Number(p.ClientID) === Number(currentUser.UserID) || Number(p.ClientID) === Number(currentUser.ClientID)));
+    renderProjectsTable(myProjects);
   } else if (pillName === 'applications') {
     if (sectionSearch) sectionSearch.style.display = 'none';
     if (sectionMyApps) sectionMyApps.style.display = 'block';
